@@ -14,11 +14,13 @@ module.exports = (grunt) ->
     # Clean public directory
     clean: ['public/']
 
+    # Compilation `.coffee` files from `dev/**` dir to `public/**` dir
+    # It does not adds function wrappers
+    # and creates `.map` sourcemap files. You should endble source map in Chrome
     coffee:
       options:
         bare: true
         sourceMap: true
-
       glob_to_multiple:
         expand: true
         cwd: 'dev/'
@@ -30,6 +32,8 @@ module.exports = (grunt) ->
     coffeelint:
       app: ['dev/**/*.coffee', '!**/vendor/**']
 
+    # Creates static server which serves foles from `.` folder on 8080 port.
+    # Also on each file change it reloads page
     connect:
       server:
         options:
@@ -53,7 +57,8 @@ module.exports = (grunt) ->
           dest: 'public/'
         ]
 
-    # 
+    # Run unittests in real browsers. Required to be in background because 
+    # it blocks regarde / watch
     karma:
       unit:
         configFile: 'public/tests/karma-config.js'
