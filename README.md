@@ -1,4 +1,4 @@
-grunt-file-coffee-template
+Gruntfile.coffee Template
 ==========================
 
-Gruntfile for CoffeeScript compilation, linting, UnitTesting and LiveReload
+Gruntfile example for CoffeeScript compilation, linting, UnitTesting and LiveReload
