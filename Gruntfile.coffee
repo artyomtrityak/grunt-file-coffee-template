@@ -1,12 +1,3 @@
-path = require 'path'
-lrSnippet = require('grunt-contrib-livereload/lib/utils').livereloadSnippet
-
-folderMount = (connect, point) ->
-  connect.static path.resolve(point)
-
-folderDir = (connect, point) ->
-  connect.directory path.resolve(point)
-
 module.exports = (grunt) ->
 
   grunt.initConfig
@@ -39,12 +30,7 @@ module.exports = (grunt) ->
         options:
           port: 8080
           base: './'
-          middleware: (connect, options) ->
-            [
-              lrSnippet
-              folderMount connect, './'
-              folderDir connect, './'
-            ]
+          livereload: on
 
     # We need to copy all static files from `dev/` directory 
     # to `public/` (build) directory
@@ -65,13 +51,16 @@ module.exports = (grunt) ->
         background: on
 
     # Watch files and run tasks when any of this file was changed
-    regarde:
+    # Newer allows compile only changed files
+    watch:
+      options:
+        livereload: on
       html:
         files: ['index.html', 'dev/**/*.html', 'dev/**/*.hbs']
-        tasks: ['copy', 'livereload']
+        tasks: ['copy']
       js:
         files: ['dev/**/*.coffee', 'dev/**/*.js']
-        tasks: ['coffee', 'karma:unit:run', 'coffeelint', 'livereload']
+        tasks: ['newer:coffee', 'karma:unit:run', 'coffeelint']
 
   # Load plugins
   grunt.loadNpmTasks 'grunt-coffeelint'
@@ -79,9 +68,9 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-contrib-connect'
   grunt.loadNpmTasks 'grunt-contrib-copy'
-  grunt.loadNpmTasks 'grunt-regarde'
-  grunt.loadNpmTasks 'grunt-contrib-livereload'
+  grunt.loadNpmTasks 'grunt-contrib-watch'
   grunt.loadNpmTasks 'grunt-karma'
+  grunt.loadNpmTasks 'grunt-newer'
 
   # Declaring tasks
   grunt.registerTask 'run', 'Start development flow', ->
@@ -92,8 +81,7 @@ module.exports = (grunt) ->
       'coffeelint',
       'connect',
       'karma',
-      'livereload-start',
-      'regarde'
+      'watch'
     ]
     grunt.option 'force', true
     grunt.task.run tasks
